@@ -36,11 +36,13 @@ public abstract class MobEntityMixin extends LivingEntity {
     }
 
     @Inject(method = "doHurtTarget", at = @At(value = "RETURN"))
-    private void applyEffectsOnHitForTarget(Entity target, CallbackInfoReturnable<Boolean> cir) {
+    private void applyEffectsOnHitForTarget(Entity target, CallbackInfoReturnable<Boolean> cir,
+                                            @Local(ordinal = 0) float f,
+                                            @Local DamageSource source) {
         boolean wasAttacked = cir.getReturnValue();
         if (wasAttacked && target instanceof LivingEntity entity &&
-                this.getItemBySlot(EquipmentSlot.MAINHAND).getItem() instanceof BaseMythicItem item) {
-            CommonFunctions.addStatusEffects(entity, item.getOnHitEffectsForEnemy(), entity);
+                this.getItemBySlot(EquipmentSlot.MAINHAND).getItem() instanceof IEffectHandHeldItem item) {
+            CommonHooks.addEffects(entity, item.getEffectsForTargetWhenHit(source, f), entity);
         }
     }
 }
