@@ -1,0 +1,33 @@
+name: Build and Upload Mod Artifacts
+
+on:
+  push:
+    branches: [ '**' ]  # Triggers on all branches
+  pull_request:
+    branches: [ '**' ]  # Triggers for PRs to any branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Build all loaders
+        run: ./gradlew build -x test
+
+      - name: Find and upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: mod-artifacts
+          path: |
+            **/build/libs/*.jar
+          retention-days: 7
