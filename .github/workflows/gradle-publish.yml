@@ -8,8 +8,10 @@
 name: Gradle Package
 
 on:
-  release:
-    types: [created]
+  push:
+    branches: [ '**' ]  # Triggers on all branches
+  pull_request:
+    branches: [ '**' ]  # Triggers for PRs to any branch
 
 jobs:
   build:
