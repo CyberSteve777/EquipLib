@@ -124,7 +124,7 @@ publishing {
             url = "https://maven.pkg.github.com/CyberSteve777/EquipLib"
             credentials {
                 username = System.getenv("GITHUB_ACTOR")
-                password = System.getenv("GITHUB_TOKEN")
+                password = System.getenv("PUBLISH_TOKEN")
             }
         }
     }
