@@ -30,4 +30,5 @@ jobs:
           name: mod-artifacts
           path: |
             **/build/libs/*.jar
+            !buildSrc/build/libs/*.jar
           retention-days: 7
