@@ -14,9 +14,7 @@ public class ArmorHooks {
         return (entity.getItemBySlot(EquipmentSlot.BODY).getItem() instanceof IEffectArmorItemExtension effectArmorItem
                 && effectArmorItem.getEffectArmorSet().equals(set)) ||
                 armorSlots.stream().map(entity::getItemBySlot).allMatch(
-                itemStack -> (itemStack.getItem() instanceof
-                        IEffectArmorItemExtension effectArmorItem &&
-                        effectArmorItem.getEffectArmorSet().equals(set))
+                itemStack -> (set.getArmorSet().hasArmorItemInSet(itemStack.getItem()))
         );
     }
 }

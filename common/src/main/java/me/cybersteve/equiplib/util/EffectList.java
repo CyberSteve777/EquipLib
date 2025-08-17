@@ -51,4 +51,6 @@ public record EffectList(ConcurrentHashMap<Holder<MobEffect>, EffectMeta> data) 
             EffectList::data,
             EffectList::new
     );
+
+    public static final EffectList EMPTY = new EffectList.Builder().build();
 }

@@ -6,7 +6,7 @@ import me.cybersteve.equiplib.registration.RegistrationProvider;
 import net.minecraft.resources.ResourceLocation;
 
 public class EffectArmorSetRegistry {
-    public static RegistrationProvider<EffectArmorSet> REGISTRY = RegistrationProvider.get(
+    private static final RegistrationProvider<EffectArmorSet> REGISTRY = RegistrationProvider.get(
             ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "effect_armor_sets"),
             Constants.MOD_ID);
 

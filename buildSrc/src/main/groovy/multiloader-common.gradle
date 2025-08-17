@@ -4,7 +4,7 @@ plugins {
 }
 
 base {
-    archivesName = "${mod_id}-${project.name}-${minecraft_version}"
+    archivesName = "${mod_id}-${project.name}"
 }
 
 java {
@@ -117,14 +117,11 @@ publishing {
     }
     repositories {
         maven {
-            url System.getenv('local_maven_url')
-        }
-        maven {
-            name = "GitHubPackages"
-            url = "https://maven.pkg.github.com/CyberSteve777/EquipLib"
+            name = "cloudsmith"
+            url = "https://api.cloudsmith.io/maven/cyberworkspace/equiplib/"
             credentials {
-                username = System.getenv("GITHUB_ACTOR")
-                password = System.getenv("PUBLISH_TOKEN")
+                username = System.getenv("CLOUDSMITH_USER")
+                password = System.getenv("CLOUDSMITH_TOKEN")
             }
         }
     }

@@ -4,10 +4,13 @@ package me.cybersteve.equiplib.item.armor.base;
 import net.minecraft.core.Holder;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.Item;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public class ArmorSet {
     protected HashSet<Holder<ArmorMaterial>> VALID_ARMOR_MATERIALS;
@@ -82,5 +85,11 @@ public class ArmorSet {
                     CHESTPLATES, LEGGINGS, BOOTS,
                     GENERIC_BODY_ARMOR);
         }
+    }
+
+    public boolean hasArmorItemInSet(Item item) {
+        return item instanceof ArmorItem armorItem && VALID_ARMOR_MATERIALS.contains(armorItem.getMaterial()) && (
+                Stream.of(HELMETS, CHESTPLATES, LEGGINGS, BOOTS, GENERIC_BODY_ARMOR).anyMatch(
+                        armorItems -> armorItems.contains(armorItem)));
     }
 }
