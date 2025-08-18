@@ -16,6 +16,5 @@ public class EquipLibNeoForge {
         // Use NeoForge to bootstrap the Common mod.
         Constants.LOGGER.info("Hello NeoForge world!");
         EquipLib.init();
-
     }
 }
