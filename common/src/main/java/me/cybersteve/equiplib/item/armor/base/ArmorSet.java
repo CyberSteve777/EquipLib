@@ -8,25 +8,24 @@ import net.minecraft.world.item.Item;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class ArmorSet {
     protected HashSet<Holder<ArmorMaterial>> VALID_ARMOR_MATERIALS;
-    protected HashSet<ArmorItem> HELMETS;
-    protected HashSet<ArmorItem> CHESTPLATES;
-    protected HashSet<ArmorItem> LEGGINGS;
-    protected HashSet<ArmorItem> BOOTS;
-    protected HashSet<ArmorItem> GENERIC_BODY_ARMOR; // non-humanoid armor
+    protected HashSet<Supplier<ArmorItem>> HELMETS;
+    protected HashSet<Supplier<ArmorItem>> CHESTPLATES;
+    protected HashSet<Supplier<ArmorItem>> LEGGINGS;
+    protected HashSet<Supplier<ArmorItem>> BOOTS;
+    protected HashSet<Supplier<ArmorItem>> GENERIC_BODY_ARMOR; // non-humanoid armor
 
 
     protected ArmorSet(HashSet<Holder<ArmorMaterial>> validArmorMaterials,
-                       HashSet<ArmorItem> helmets,
-                       HashSet<ArmorItem> chestplates,
-                       HashSet<ArmorItem> leggings,
-                       HashSet<ArmorItem> boots,
-                       HashSet<ArmorItem> generic_body_armor) {
+                       HashSet<Supplier<ArmorItem>> helmets,
+                       HashSet<Supplier<ArmorItem>> chestplates,
+                       HashSet<Supplier<ArmorItem>> leggings,
+                       HashSet<Supplier<ArmorItem>> boots,
+                       HashSet<Supplier<ArmorItem>> generic_body_armor) {
         VALID_ARMOR_MATERIALS = validArmorMaterials;
         HELMETS = helmets;
         CHESTPLATES = chestplates;
@@ -37,11 +36,11 @@ public class ArmorSet {
 
     public static class Builder {
         protected HashSet<Holder<ArmorMaterial>> VALID_ARMOR_MATERIALS = new HashSet<>();
-        protected HashSet<ArmorItem> HELMETS = new HashSet<>();
-        protected HashSet<ArmorItem> CHESTPLATES = new HashSet<>();
-        protected HashSet<ArmorItem> LEGGINGS = new HashSet<>();
-        protected HashSet<ArmorItem> BOOTS = new HashSet<>();
-        protected HashSet<ArmorItem> GENERIC_BODY_ARMOR = new HashSet<>(); // non-humanoid armor
+        protected HashSet<Supplier<ArmorItem>> HELMETS = new HashSet<>();
+        protected HashSet<Supplier<ArmorItem>> CHESTPLATES = new HashSet<>();
+        protected HashSet<Supplier<ArmorItem>> LEGGINGS = new HashSet<>();
+        protected HashSet<Supplier<ArmorItem>> BOOTS = new HashSet<>();
+        protected HashSet<Supplier<ArmorItem>> GENERIC_BODY_ARMOR = new HashSet<>(); // non-humanoid armor
 
 
         @SafeVarargs
@@ -52,16 +51,16 @@ public class ArmorSet {
         }
 
         protected void addArmorItem(Supplier<ArmorItem> armorItemSupplier) {
-            ArmorItem item = armorItemSupplier.get();
-            if (!VALID_ARMOR_MATERIALS.contains(item.getMaterial())) {
-                throw new IllegalArgumentException("ArmorMaterial %s of ArmorItem %s is not in valid armor materials".formatted(item.getMaterial().value(), item));
+            if (!VALID_ARMOR_MATERIALS.contains(armorItemSupplier.get().getMaterial())) {
+                throw new IllegalArgumentException("ArmorMaterial %s of ArmorItem %s is not in valid armor materials"
+                        .formatted(armorItemSupplier.get().getMaterial().value(), armorItemSupplier.get()));
             }
-            switch (item.getType()) {
-                case HELMET -> HELMETS.add(item);
-                case CHESTPLATE -> CHESTPLATES.add(item);
-                case LEGGINGS -> LEGGINGS.add(item);
-                case BOOTS -> BOOTS.add(item);
-                case BODY -> GENERIC_BODY_ARMOR.add(item);
+            switch (armorItemSupplier.get().getType()) {
+                case HELMET -> HELMETS.add(armorItemSupplier);
+                case CHESTPLATE -> CHESTPLATES.add(armorItemSupplier);
+                case LEGGINGS -> LEGGINGS.add(armorItemSupplier);
+                case BOOTS -> BOOTS.add(armorItemSupplier);
+                case BODY -> GENERIC_BODY_ARMOR.add(armorItemSupplier);
             }
         }
 
@@ -90,6 +89,12 @@ public class ArmorSet {
     public boolean hasArmorItemInSet(Item item) {
         return item instanceof ArmorItem armorItem && VALID_ARMOR_MATERIALS.contains(armorItem.getMaterial()) && (
                 Stream.of(HELMETS, CHESTPLATES, LEGGINGS, BOOTS, GENERIC_BODY_ARMOR).anyMatch(
-                        armorItems -> armorItems.contains(armorItem)));
+                        armorItems -> getter(armorItems).contains(item)));
+    }
+
+    private static HashSet<ArmorItem> getter(HashSet<Supplier<ArmorItem>> supplierHashSet) {
+        HashSet<ArmorItem> result = HashSet.newHashSet(supplierHashSet.size());
+        supplierHashSet.stream().map(Supplier::get).forEach(result::add);
+        return result;
     }
 }
