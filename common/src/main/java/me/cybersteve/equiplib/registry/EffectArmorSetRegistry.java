@@ -8,14 +8,14 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 
 public class EffectArmorSetRegistry {
-    public static final RegistrationProvider<EffectArmorSet> ARMOR_SET_REGISTRATION_PROVIDER = RegistrationProvider.get(
+    private static final RegistrationProvider<EffectArmorSet> EAS_REGISTRATION_PROVIDER = RegistrationProvider.get(
             ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "effect_armor_sets"),
             Constants.MOD_ID);
 
     public static Registry<EffectArmorSet> REGISTRY;
 
     public static Registry<EffectArmorSet> buildCustomRegistry() {
-        return ARMOR_SET_REGISTRATION_PROVIDER.registryBuilder().withFeature(RegistryFeatureType.SYNCED).build();
+        return EAS_REGISTRATION_PROVIDER.registryBuilder().withFeature(RegistryFeatureType.SYNCED).build();
     }
 
     public static void init() {
