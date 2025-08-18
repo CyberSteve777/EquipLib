@@ -1,5 +1,6 @@
 package me.cybersteve.equiplib;
 
+import me.cybersteve.equiplib.registry.RegistrationHelper;
 import net.fabricmc.api.ModInitializer;
 
 public class EquipLibFabric implements ModInitializer {
@@ -14,5 +15,6 @@ public class EquipLibFabric implements ModInitializer {
         // Use Fabric to bootstrap the Common mod.
         Constants.LOGGER.info("Hello Fabric world!");
         EquipLib.init();
+        RegistrationHelper.registerCustomRegistry();
     }
 }
