@@ -50,25 +50,65 @@ public class ArmorSet {
             return this;
         }
 
-        protected void addArmorItem(Supplier<ArmorItem> armorItemSupplier) {
-            if (!VALID_ARMOR_MATERIALS.contains(armorItemSupplier.get().getMaterial())) {
-                throw new IllegalArgumentException("ArmorMaterial %s of ArmorItem %s is not in valid armor materials"
-                        .formatted(armorItemSupplier.get().getMaterial().value(), armorItemSupplier.get()));
-            }
-            switch (armorItemSupplier.get().getType()) {
-                case HELMET -> HELMETS.add(armorItemSupplier);
-                case CHESTPLATE -> CHESTPLATES.add(armorItemSupplier);
-                case LEGGINGS -> LEGGINGS.add(armorItemSupplier);
-                case BOOTS -> BOOTS.add(armorItemSupplier);
-                case BODY -> GENERIC_BODY_ARMOR.add(armorItemSupplier);
-            }
+        protected void addHelmet(Supplier<ArmorItem> armorItemSupplier) {
+            HELMETS.add(armorItemSupplier);
+        }
+        protected void addChestplate(Supplier<ArmorItem> armorItemSupplier) {
+            CHESTPLATES.add(armorItemSupplier);
+        }
+
+        protected void addGreaves(Supplier<ArmorItem> armorItemSupplier) {
+            LEGGINGS.add(armorItemSupplier);
+        }
+        protected void addShoes(Supplier<ArmorItem> armorItemSupplier) {
+            BOOTS.add(armorItemSupplier);
+        }
+
+        protected void addGenericArmor(Supplier<ArmorItem> armorItemSupplier) {
+            GENERIC_BODY_ARMOR.add(armorItemSupplier);
         }
 
         @SafeVarargs
-        public final Builder addArmorItems(Supplier<ArmorItem> armorItemSupplier, Supplier<ArmorItem>... otherArmorItemSuppliers) {
-            addArmorItem(armorItemSupplier);
+        public final Builder addHelmets(Supplier<ArmorItem> armorItemSupplier, Supplier<ArmorItem>... otherArmorItemSuppliers) {
+            addHelmet(armorItemSupplier);
             for (var supplier : otherArmorItemSuppliers) {
-                addArmorItem(supplier);
+                addHelmet(supplier);
+            }
+            return this;
+        }
+
+        @SafeVarargs
+        public final Builder addChestPlates(Supplier<ArmorItem> armorItemSupplier, Supplier<ArmorItem>... otherArmorItemSuppliers) {
+            addChestplate(armorItemSupplier);
+            for (var supplier : otherArmorItemSuppliers) {
+                addChestplate(supplier);
+            }
+            return this;
+        }
+
+        @SafeVarargs
+        public final Builder addLeggings(Supplier<ArmorItem> armorItemSupplier, Supplier<ArmorItem>... otherArmorItemSuppliers) {
+            addGreaves(armorItemSupplier);
+            for (var supplier : otherArmorItemSuppliers) {
+                addGreaves(supplier);
+            }
+            return this;
+        }
+
+        @SafeVarargs
+        public final Builder addBoots(Supplier<ArmorItem> armorItemSupplier, Supplier<ArmorItem>... otherArmorItemSuppliers) {
+            addShoes(armorItemSupplier);
+            for (var supplier : otherArmorItemSuppliers) {
+                addShoes(supplier);
+            }
+            return this;
+        }
+
+        @SafeVarargs
+        public final Builder addGenericArmorItems(Supplier<ArmorItem> armorItemSupplier, Supplier<ArmorItem>... otherArmorItemSuppliers) {
+            addGenericArmor(armorItemSupplier);
+            for (var supplier : otherArmorItemSuppliers) {
+                addGenericArmor(supplier);
             }
             return this;
         }
