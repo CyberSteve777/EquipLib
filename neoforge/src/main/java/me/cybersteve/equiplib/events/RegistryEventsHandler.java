@@ -10,6 +10,6 @@ import me.cybersteve.equiplib.Constants;
 public class RegistryEventsHandler {
     @SubscribeEvent // on the mod event bus
     public static void registerRegistries(NewRegistryEvent event) {
-        event.register(EffectArmorSetRegistry.getRegistryForRegistration());
+        event.register(EffectArmorSetRegistry.buildCustomRegistry());
     }
 }
