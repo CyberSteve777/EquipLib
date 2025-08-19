@@ -35,8 +35,8 @@ public abstract class PlayerEntityMixin extends LivingEntity {
     @WrapOperation(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
     private boolean applyEffectsOnHitForTarget(Entity target, DamageSource source, float amount, Operation<Boolean> original) {
         boolean was_hit = original.call(target, source, amount);
-        if (was_hit && this.getItemBySlot(EquipmentSlot.MAINHAND).getItem() instanceof IEffectHandHeldItem item) {
-            CommonHooks.addEffects(this, item.getEffectsForTargetWhenHit(source, amount), this);
+        if (was_hit && target instanceof LivingEntity entity && this.getItemBySlot(EquipmentSlot.MAINHAND).getItem() instanceof IEffectHandHeldItem item) {
+            CommonHooks.addEffects(entity, item.getEffectsForTargetWhenHit(source, amount), this);
         }
         return was_hit;
     }
