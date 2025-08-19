@@ -1,7 +1,6 @@
 package me.cybersteve.equiplib;
 
 import me.cybersteve.equiplib.platform.Services;
-import me.cybersteve.equiplib.registry.EffectArmorSetRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Items;
 
@@ -26,6 +25,5 @@ public class EquipLib {
         if (Services.PLATFORM.isModLoaded("equiplib")) {
             Constants.LOGGER.info("Hello to {}", Constants.MOD_NAME);
         }
-        EffectArmorSetRegistry.init();
     }
 }
