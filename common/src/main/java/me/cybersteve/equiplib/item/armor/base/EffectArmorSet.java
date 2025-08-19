@@ -1,13 +1,21 @@
 package me.cybersteve.equiplib.item.armor.base;
 
-public abstract class EffectArmorSet implements IEffectArmorSetExtension {
-    protected ArmorSet armorSet;
+import net.minecraft.resources.ResourceLocation;
 
-    public EffectArmorSet(ArmorSet armorSet) {
-        this.armorSet = armorSet;
+public abstract class EffectArmorSet implements IEffectArmorSetExtension {
+    protected ResourceLocation id;
+
+    public EffectArmorSet(ResourceLocation id) {
+        this.id = id;
     }
 
-    public ArmorSet getArmorSet() {
-        return armorSet;
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof EffectArmorSet other && other.id.equals(this.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
     }
 }
