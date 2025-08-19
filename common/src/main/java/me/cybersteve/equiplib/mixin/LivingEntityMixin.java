@@ -58,7 +58,7 @@ public abstract class LivingEntityMixin extends Entity {
     }
 
     @Inject(method = "tick", at = @At(value = "HEAD"))
-    private void applyArmorEffectsForSelfWhenWearing(CallbackInfo ci) {
+    private void applyFullSetArmorEffectsForSelfWhenWearing(CallbackInfo ci) {
         ItemStack head = this.getItemBySlot(EquipmentSlot.HEAD);
         LivingEntity self = (LivingEntity) (Object) this;
         if (!head.isEmpty() && head.getItem() instanceof IEffectArmorItemExtension item) {
@@ -78,7 +78,7 @@ public abstract class LivingEntityMixin extends Entity {
     }
 
     @Inject(method = "hurt", at = @At(value = "RETURN"))
-    private void applyArmorEffectsOnHitForAttacker(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+    private void applyFullSetArmorEffectsOnHitForAttacker(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         boolean was_damaged = cir.getReturnValue();
         LivingEntity self = (LivingEntity) (Object) this;
         if (was_damaged) {
@@ -95,7 +95,7 @@ public abstract class LivingEntityMixin extends Entity {
     }
 
     @Inject(method = "hurt", at = @At(value = "RETURN"))
-    private void applyArmorEffectsOnHitForSelf(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+    private void applyFullSetArmorEffectsOnHitForSelf(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         boolean was_damaged = cir.getReturnValue();
         LivingEntity self = (LivingEntity) (Object) this;
         if (was_damaged) {
@@ -105,7 +105,7 @@ public abstract class LivingEntityMixin extends Entity {
                 if (!head.isEmpty() && head.getItem() instanceof IEffectArmorItemExtension item &&
                         ArmorHooks.hasFullEffectSetArmorOn(self, item.getEffectArmorSet())) {
                     CommonHooks.addEffects(self,
-                            item.getEffectArmorSet().getEffectsForAttackerWhenHit(source, amount), self);
+                            item.getEffectArmorSet().getEffectsForSelfWhenHit(source, amount), self);
                 }
             }
         }
