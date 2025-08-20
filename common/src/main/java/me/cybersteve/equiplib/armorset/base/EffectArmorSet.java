@@ -1,4 +1,4 @@
-package me.cybersteve.equiplib.item.armor.base;
+package me.cybersteve.equiplib.armorset.base;
 
 import net.minecraft.resources.ResourceLocation;
 
