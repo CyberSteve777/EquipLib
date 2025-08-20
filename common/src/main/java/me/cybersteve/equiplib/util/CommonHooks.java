@@ -12,9 +12,8 @@ public class CommonHooks {
             EffectMeta meta = effectEntry.getValue();
             MobEffectInstance instance = entity.getEffect(effect);
             if (instance != null) {
-                if ((instance.isInfiniteDuration() && instance.getAmplifier() != meta.amplifier()) || instance.getAmplifier() < meta.amplifier()) {
-                    return true;
-                }
+                return meta.duration() == MobEffectInstance.INFINITE_DURATION ||
+                        instance.getAmplifier() < meta.amplifier();
             } else {
                 return true;
             }
@@ -26,9 +25,12 @@ public class CommonHooks {
         for (var effectEntry : effects.data().entrySet()) {
             Holder<MobEffect> effect = effectEntry.getKey();
             EffectMeta meta = effectEntry.getValue();
-            if (effect != null && !effect.value().isInstantenous()) {
+            if (!effect.value().isInstantenous()) {
                 if (entity.hasEffect(effect)) {
-                    entity.removeEffect(effect);
+                    MobEffectInstance instance = entity.getEffect(effect);
+                    if (!instance.isInfiniteDuration() && instance.getAmplifier() < meta.amplifier()) {
+                        entity.removeEffect(effect);
+                    }
                 }
                 entity.addEffect(new MobEffectInstance(effect, meta.duration(), meta.amplifier(),
                         meta.ambient(), meta.showParticles(), meta.showIcon()), attacker);
@@ -40,11 +42,11 @@ public class CommonHooks {
         addEffects(entity, effects, null);
     }
 
-    public static void removeInfiniteEffects(LivingEntity entity, EffectList effects) {
+    public static void removeEffects(LivingEntity entity, EffectList effects) {
         for (var effectEntry : effects.data().entrySet()) {
             Holder<MobEffect> effect = effectEntry.getKey();
             EffectMeta meta = effectEntry.getValue();
-            if (effect != null && entity.hasEffect(effect) && entity.getEffect(effect).isInfiniteDuration() &&
+            if (effect != null && entity.hasEffect(effect) &&
                     entity.getEffect(effect).getAmplifier() == meta.amplifier()) {
                 entity.removeEffect(effect);
             }
