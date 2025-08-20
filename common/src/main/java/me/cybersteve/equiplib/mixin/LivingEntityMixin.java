@@ -66,7 +66,7 @@ public abstract class LivingEntityMixin extends Entity {
         for (EquipmentSlot slot: List.of(EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET,
                 EquipmentSlot.BODY)) {
             ItemStack stack = this.getItemBySlot(slot);
-            EffectList currentSlotEffects = equipLib$currentEffectsBySlot.getOrDefault(slot, EffectList.EMPTY);
+            EffectList currentSlotEffects = equipLib$currentEffectsBySlot.getOrDefault(slot, EffectList.getEmpty());
             if (!stack.isEmpty() && stack.getItem() instanceof IEffectArmorItemExtension item) {
                 EffectList newEffectsBySlot = item.getEffectArmorSet().getEffectsWhenWearing(self);
                 if (!currentSlotEffects.isEmpty()) {
@@ -78,7 +78,7 @@ public abstract class LivingEntityMixin extends Entity {
                 equipLib$currentEffectsBySlot.put(slot, newEffectsBySlot);
             } else if (!currentSlotEffects.isEmpty()) {
                 CommonHooks.removeEffects(self, currentSlotEffects);
-                equipLib$currentEffectsBySlot.put(slot, EffectList.EMPTY);
+                equipLib$currentEffectsBySlot.put(slot, EffectList.getEmpty());
             }
         }
     }
