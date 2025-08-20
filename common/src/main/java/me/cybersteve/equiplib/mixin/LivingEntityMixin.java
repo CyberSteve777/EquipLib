@@ -28,7 +28,7 @@ public abstract class LivingEntityMixin extends Entity {
 
     public LivingEntityMixin(EntityType<?> type, Level world) {
         super(type, world);
-        equipLib$currentHandHeldEffects = EffectList.EMPTY;
+        equipLib$currentHandHeldEffects = EffectList.getEmpty();
         equipLib$currentEffectsBySlot = new HashMap<>(5);
     }
 
