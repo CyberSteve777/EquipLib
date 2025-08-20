@@ -2,6 +2,7 @@ package me.cybersteve.equiplib.mixin;
 
 import me.cybersteve.equiplib.item.armor.base.IEffectArmorItemExtension;
 import me.cybersteve.equiplib.item.handheld.base.IEffectHandHeldItem;
+import me.cybersteve.equiplib.util.EffectList;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -16,8 +17,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import me.cybersteve.equiplib.util.ArmorHooks;
 import me.cybersteve.equiplib.util.CommonHooks;
+
+import java.util.HashMap;
+import java.util.List;
 
 
 @Mixin(LivingEntity.class)
@@ -25,87 +28,91 @@ public abstract class LivingEntityMixin extends Entity {
 
     public LivingEntityMixin(EntityType<?> type, Level world) {
         super(type, world);
-        equipLib$lastWorn = null;
+        equipLib$currentHandHeldEffects = EffectList.EMPTY;
+        equipLib$currentEffectsBySlot = new HashMap<>(5);
     }
 
     @Shadow
     public abstract ItemStack getItemBySlot(EquipmentSlot slot);
 
     @Unique
-    private IEffectHandHeldItem equipLib$lastUsed;
+    private EffectList equipLib$currentHandHeldEffects;
 
     @Unique
-    private IEffectArmorItemExtension equipLib$lastWorn;
+    private final HashMap<EquipmentSlot, EffectList> equipLib$currentEffectsBySlot;
 
     @Inject(method = "tick", at = @At(value = "HEAD"))
     private void checkItemInHand(CallbackInfo ci) {
         LivingEntity self = (LivingEntity) (Object) this;
-        if (!this.getItemBySlot(EquipmentSlot.MAINHAND).isEmpty() &&
-                (this.getItemBySlot(EquipmentSlot.MAINHAND).getItem() instanceof IEffectHandHeldItem item)) {
-            if (equipLib$lastUsed != null && !item.equals(equipLib$lastUsed)) {
-                CommonHooks.removeInfiniteEffects(self,
-                        equipLib$lastUsed.getEffectsWhenInHand(self));
+        if (this.getItemBySlot(EquipmentSlot.MAINHAND).getItem() instanceof IEffectHandHeldItem item) {
+            EffectList newEffects = item.getEffectsWhenInHand(self);
+            if (equipLib$currentHandHeldEffects.isEmpty() && !newEffects.equals(equipLib$currentHandHeldEffects)) {
+                CommonHooks.removeEffects(self, equipLib$currentHandHeldEffects);
             }
-            if (CommonHooks.checkEffects(self, item.getEffectsWhenInHand(self))) {
-                CommonHooks.addEffects(self, item.getEffectsWhenInHand(self));
+            if (CommonHooks.checkEffects(self, newEffects)) {
+                CommonHooks.addEffects(self, newEffects);
             }
-            equipLib$lastUsed = item;
-        } else if (equipLib$lastUsed != null) {
-            CommonHooks.removeInfiniteEffects(self,
-                    equipLib$lastUsed.getEffectsWhenInHand(self));
-            equipLib$lastUsed = null;
+            equipLib$currentHandHeldEffects = newEffects;
+        } else if (equipLib$currentHandHeldEffects.isEmpty()) {
+            CommonHooks.removeEffects(self,
+                    equipLib$currentHandHeldEffects);
+            equipLib$currentHandHeldEffects = EffectList.EMPTY;
         }
     }
 
     @Inject(method = "tick", at = @At(value = "HEAD"))
-    private void applyFullSetArmorEffectsForSelfWhenWearing(CallbackInfo ci) {
-        ItemStack head = this.getItemBySlot(EquipmentSlot.HEAD);
+    private void applySetArmorEffectsForSelfWhenWearing(CallbackInfo ci) {
         LivingEntity self = (LivingEntity) (Object) this;
-        if (!head.isEmpty() && head.getItem() instanceof IEffectArmorItemExtension item) {
-            if (equipLib$lastWorn != null && !ArmorHooks.hasFullEffectSetArmorOn(self, item.getEffectArmorSet())) {
-                CommonHooks.removeInfiniteEffects(self,
-                        equipLib$lastWorn.getEffectArmorSet().getEffectsWhenWearing(self));
+        for (EquipmentSlot slot: List.of(EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET,
+                EquipmentSlot.BODY)) {
+            ItemStack stack = this.getItemBySlot(slot);
+            EffectList currentSlotEffects = equipLib$currentEffectsBySlot.getOrDefault(slot, EffectList.EMPTY);
+            if (!stack.isEmpty() && stack.getItem() instanceof IEffectArmorItemExtension item) {
+                EffectList newEffectsBySlot = item.getEffectArmorSet().getEffectsWhenWearing(self);
+                if (!currentSlotEffects.isEmpty()) {
+                    CommonHooks.removeEffects(self, currentSlotEffects);
+                }
+                if (CommonHooks.checkEffects(self, newEffectsBySlot)) {
+                    CommonHooks.addEffects(self, newEffectsBySlot);
+                }
+                equipLib$currentEffectsBySlot.put(slot, newEffectsBySlot);
+            } else if (!currentSlotEffects.isEmpty()) {
+                CommonHooks.removeEffects(self, currentSlotEffects);
+                equipLib$currentEffectsBySlot.put(slot, EffectList.EMPTY);
             }
-            if (ArmorHooks.hasFullEffectSetArmorOn(self, item.getEffectArmorSet()) &&
-                    CommonHooks.checkEffects(self, item.getEffectArmorSet().getEffectsWhenWearing(self))) {
-                CommonHooks.addEffects(self, item.getEffectArmorSet().getEffectsWhenWearing(self));
-            }
-            equipLib$lastWorn = item;
-        } else if (equipLib$lastWorn != null) {
-            CommonHooks.removeInfiniteEffects(self, equipLib$lastWorn.getEffectArmorSet().getEffectsWhenWearing(self));
-            equipLib$lastWorn = null;
         }
     }
 
     @Inject(method = "hurt", at = @At(value = "RETURN"))
-    private void applyFullSetArmorEffectsOnHitForAttacker(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+    private void applySetArmorEffectsOnHitForAttacker(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         boolean was_damaged = cir.getReturnValue();
         LivingEntity self = (LivingEntity) (Object) this;
         if (was_damaged) {
             Entity attacker = source.getEntity();
             if (attacker instanceof LivingEntity entity) {
-                ItemStack head = this.getItemBySlot(EquipmentSlot.HEAD);
-                if (!head.isEmpty() && head.getItem() instanceof IEffectArmorItemExtension item &&
-                        ArmorHooks.hasFullEffectSetArmorOn(self, item.getEffectArmorSet())) {
-                    CommonHooks.addEffects(entity,
-                            item.getEffectArmorSet().getEffectsForAttackerWhenHit(source, amount), self);
+                for (EquipmentSlot slot: List.of(EquipmentSlot.HEAD, EquipmentSlot.CHEST,
+                        EquipmentSlot.LEGS, EquipmentSlot.FEET, EquipmentSlot.BODY)) {
+                    ItemStack stack = this.getItemBySlot(slot);
+                    if (!stack.isEmpty() && stack.getItem() instanceof IEffectArmorItemExtension item) {
+                        CommonHooks.addEffects(entity,
+                                item.getEffectArmorSet().getEffectsForAttackerWhenHit(source, self, amount), self);
+                    }
                 }
             }
         }
     }
 
     @Inject(method = "hurt", at = @At(value = "RETURN"))
-    private void applyFullSetArmorEffectsOnHitForSelf(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+    private void applySetArmorEffectsOnHitForSelf(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         boolean was_damaged = cir.getReturnValue();
         LivingEntity self = (LivingEntity) (Object) this;
         if (was_damaged) {
-            Entity attacker = source.getEntity();
-            if (attacker instanceof LivingEntity) {
-                ItemStack head = this.getItemBySlot(EquipmentSlot.HEAD);
-                if (!head.isEmpty() && head.getItem() instanceof IEffectArmorItemExtension item &&
-                        ArmorHooks.hasFullEffectSetArmorOn(self, item.getEffectArmorSet())) {
+            for (EquipmentSlot slot: List.of(EquipmentSlot.HEAD, EquipmentSlot.CHEST,
+                    EquipmentSlot.LEGS, EquipmentSlot.FEET, EquipmentSlot.BODY)) {
+                ItemStack stack = this.getItemBySlot(slot);
+                if (!stack.isEmpty() && stack.getItem() instanceof IEffectArmorItemExtension item) {
                     CommonHooks.addEffects(self,
-                            item.getEffectArmorSet().getEffectsForSelfWhenHit(source, amount), self);
+                            item.getEffectArmorSet().getEffectsForSelfWhenHit(source, self, amount), self);
                 }
             }
         }
