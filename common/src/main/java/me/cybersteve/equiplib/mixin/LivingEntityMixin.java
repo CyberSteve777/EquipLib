@@ -10,6 +10,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -25,38 +26,35 @@ import java.util.List;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin extends Entity {
-
-    public LivingEntityMixin(EntityType<?> type, Level world) {
-        super(type, world);
-        equipLib$currentHandHeldEffects = EffectList.getEmpty();
-        equipLib$currentEffectsBySlot = new HashMap<>(5);
-    }
-
     @Shadow
     public abstract ItemStack getItemBySlot(EquipmentSlot slot);
 
     @Unique
-    private EffectList equipLib$currentHandHeldEffects;
+    private EffectList equipLib$currentHandHeldEffects = EffectList.getEmpty();
 
     @Unique
-    private final HashMap<EquipmentSlot, EffectList> equipLib$currentEffectsBySlot;
+    private final HashMap<EquipmentSlot, EffectList> equipLib$currentEffectsBySlot = new HashMap<>(5);
+
+    public LivingEntityMixin(EntityType<?> type, Level world) {
+        super(type, world);
+    }
 
     @Inject(method = "tick", at = @At(value = "HEAD"))
     private void checkItemInHand(CallbackInfo ci) {
         LivingEntity self = (LivingEntity) (Object) this;
         if (this.getItemBySlot(EquipmentSlot.MAINHAND).getItem() instanceof IEffectHandHeldItem item) {
             EffectList newEffects = item.getEffectsWhenInHand(self);
-            if (equipLib$currentHandHeldEffects.isEmpty() && !newEffects.equals(equipLib$currentHandHeldEffects)) {
+            if (!equipLib$currentHandHeldEffects.isEmpty() && !newEffects.equals(equipLib$currentHandHeldEffects)) {
                 CommonHooks.removeEffects(self, equipLib$currentHandHeldEffects);
             }
             if (CommonHooks.checkEffects(self, newEffects)) {
                 CommonHooks.addEffects(self, newEffects);
             }
             equipLib$currentHandHeldEffects = newEffects;
-        } else if (equipLib$currentHandHeldEffects.isEmpty()) {
+        } else if (!equipLib$currentHandHeldEffects.isEmpty()) {
             CommonHooks.removeEffects(self,
                     equipLib$currentHandHeldEffects);
-            equipLib$currentHandHeldEffects = EffectList.EMPTY;
+            equipLib$currentHandHeldEffects = EffectList.getEmpty();
         }
     }
 
@@ -69,7 +67,7 @@ public abstract class LivingEntityMixin extends Entity {
             EffectList currentSlotEffects = equipLib$currentEffectsBySlot.getOrDefault(slot, EffectList.getEmpty());
             if (!stack.isEmpty() && stack.getItem() instanceof IEffectArmorItemExtension item) {
                 EffectList newEffectsBySlot = item.getEffectArmorSet().getEffectsWhenWearing(self);
-                if (!currentSlotEffects.isEmpty()) {
+                if (!currentSlotEffects.isEmpty() && !currentSlotEffects.equals(newEffectsBySlot)) {
                     CommonHooks.removeEffects(self, currentSlotEffects);
                 }
                 if (CommonHooks.checkEffects(self, newEffectsBySlot)) {
