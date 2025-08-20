@@ -9,6 +9,31 @@ import net.minecraft.world.effect.MobEffect;
 import java.util.concurrent.ConcurrentHashMap;
 
 public record EffectList(ConcurrentHashMap<Holder<MobEffect>, EffectMeta> data) {
+    public static final EffectList EMPTY = new EffectList.Builder().build();
+
+    public static final StreamCodec<?, EffectList> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.map(ConcurrentHashMap::new,
+                    ByteBufCodecs.holderRegistry(Registries.MOB_EFFECT),
+                    EffectMeta.STREAM_CODEC),
+            EffectList::data,
+            EffectList::new
+    );
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof EffectList(ConcurrentHashMap<Holder<MobEffect>, EffectMeta> data1) && data.equals(data1);
+    }
+
+    @Override
+    public int hashCode() {
+        return data.hashCode();
+    }
+
+    public boolean isEmpty() {
+        return this.equals(EMPTY);
+    }
+
+
     public static class Builder {
         private final ConcurrentHashMap<Holder<MobEffect>, EffectMeta> data;
 
@@ -43,14 +68,4 @@ public record EffectList(ConcurrentHashMap<Holder<MobEffect>, EffectMeta> data) 
             return new EffectList(data);
         }
     }
-
-    public static final StreamCodec<?, EffectList> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.map(ConcurrentHashMap::new,
-                    ByteBufCodecs.holderRegistry(Registries.MOB_EFFECT),
-                    EffectMeta.STREAM_CODEC),
-            EffectList::data,
-            EffectList::new
-    );
-
-    public static final EffectList EMPTY = new EffectList.Builder().build();
 }
