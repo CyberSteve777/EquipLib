@@ -9,7 +9,6 @@ import net.minecraft.world.effect.MobEffect;
 import java.util.concurrent.ConcurrentHashMap;
 
 public record EffectList(ConcurrentHashMap<Holder<MobEffect>, EffectMeta> data) {
-    public static final EffectList EMPTY = getEmpty();
 
     public static final StreamCodec<?, EffectList> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.map(ConcurrentHashMap::new,
@@ -34,7 +33,7 @@ public record EffectList(ConcurrentHashMap<Holder<MobEffect>, EffectMeta> data) 
     }
 
     public boolean isEmpty() {
-        return this.equals(EMPTY);
+        return data.isEmpty();
     }
 
 
