@@ -10,7 +10,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -30,7 +29,7 @@ public abstract class LivingEntityMixin extends Entity {
     public abstract ItemStack getItemBySlot(EquipmentSlot slot);
 
     @Unique
-    private EffectList equipLib$currentHandHeldEffects = EffectList.getEmpty();
+    private EffectList equipLib$currentHandHeldEffects = EffectList.getEmptyList();
 
     @Unique
     private final HashMap<EquipmentSlot, EffectList> equipLib$currentEffectsBySlot = new HashMap<>(5);
@@ -47,14 +46,14 @@ public abstract class LivingEntityMixin extends Entity {
             if (!equipLib$currentHandHeldEffects.isEmpty() && !newEffects.equals(equipLib$currentHandHeldEffects)) {
                 CommonHooks.removeEffects(self, equipLib$currentHandHeldEffects);
             }
-            if (CommonHooks.checkEffects(self, newEffects)) {
+            if (CommonHooks.checkIfNeedToApply(self, newEffects)) {
                 CommonHooks.addEffects(self, newEffects);
             }
             equipLib$currentHandHeldEffects = newEffects;
         } else if (!equipLib$currentHandHeldEffects.isEmpty()) {
             CommonHooks.removeEffects(self,
                     equipLib$currentHandHeldEffects);
-            equipLib$currentHandHeldEffects = EffectList.getEmpty();
+            equipLib$currentHandHeldEffects = EffectList.getEmptyList();
         }
     }
 
@@ -64,19 +63,19 @@ public abstract class LivingEntityMixin extends Entity {
         for (EquipmentSlot slot: List.of(EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET,
                 EquipmentSlot.BODY)) {
             ItemStack stack = this.getItemBySlot(slot);
-            EffectList currentSlotEffects = equipLib$currentEffectsBySlot.getOrDefault(slot, EffectList.getEmpty());
+            EffectList currentSlotEffects = equipLib$currentEffectsBySlot.getOrDefault(slot, EffectList.getEmptyList());
             if (!stack.isEmpty() && stack.getItem() instanceof IEffectArmorItemExtension item) {
                 EffectList newEffectsBySlot = item.getEffectArmorSet().getEffectsWhenWearing(self);
                 if (!currentSlotEffects.isEmpty() && !currentSlotEffects.equals(newEffectsBySlot)) {
                     CommonHooks.removeEffects(self, currentSlotEffects);
                 }
-                if (CommonHooks.checkEffects(self, newEffectsBySlot)) {
+                if (CommonHooks.checkIfNeedToApply(self, newEffectsBySlot)) {
                     CommonHooks.addEffects(self, newEffectsBySlot);
                 }
                 equipLib$currentEffectsBySlot.put(slot, newEffectsBySlot);
             } else if (!currentSlotEffects.isEmpty()) {
                 CommonHooks.removeEffects(self, currentSlotEffects);
-                equipLib$currentEffectsBySlot.put(slot, EffectList.getEmpty());
+                equipLib$currentEffectsBySlot.put(slot, EffectList.getEmptyList());
             }
         }
     }
