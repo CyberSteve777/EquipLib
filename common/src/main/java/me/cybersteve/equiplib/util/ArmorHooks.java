@@ -7,7 +7,17 @@ import net.minecraft.world.entity.LivingEntity;
 
 import java.util.List;
 
+/**
+ * Armor hooks.
+ */
 public class ArmorHooks {
+    /**
+     * Has full effect set armor on boolean.
+     *
+     * @param entity the entity
+     * @param set    the set
+     * @return the boolean
+     */
     public static boolean hasFullEffectSetArmorOn(LivingEntity entity, EffectArmorSet set) {
         List<EquipmentSlot> armorSlots = List.of(EquipmentSlot.HEAD, EquipmentSlot.CHEST,
                 EquipmentSlot.LEGS, EquipmentSlot.FEET);

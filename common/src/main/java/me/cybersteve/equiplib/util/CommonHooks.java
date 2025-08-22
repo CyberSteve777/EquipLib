@@ -5,8 +5,18 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 
+/**
+ * Common hooks for equipment.
+ */
 public class CommonHooks {
-    public static boolean checkEffects(LivingEntity entity, EffectList effects) {
+    /**
+     * Check if need to apply the effects from EffectList (to prevent flashing).
+     *
+     * @param entity  the entity
+     * @param effects the effects
+     * @return the boolean
+     */
+    public static boolean checkIfNeedToApply(LivingEntity entity, EffectList effects) {
         for (var effectEntry : effects.data().entrySet()) {
             Holder<MobEffect> effect = effectEntry.getKey();
             EffectMeta meta = effectEntry.getValue();
@@ -21,6 +31,13 @@ public class CommonHooks {
         return false;
     }
 
+    /**
+     * Add effects of attacker to target entity.
+     *
+     * @param entity   the entity
+     * @param effects  the effects
+     * @param attacker the attacker
+     */
     public static void addEffects(LivingEntity entity, EffectList effects, LivingEntity attacker) {
         for (var effectEntry : effects.data().entrySet()) {
             Holder<MobEffect> effect = effectEntry.getKey();
@@ -38,10 +55,23 @@ public class CommonHooks {
         }
     }
 
+    /**
+     * Overloaded add effects if applying effects to self. Since there's no attacker here, null is passed.
+     *
+     * @param entity  the entity
+     * @param effects the effects
+     */
     public static void addEffects(LivingEntity entity, EffectList effects) {
         addEffects(entity, effects, null);
     }
 
+    /**
+     * Remove effects from entity. Effects are passed via EffectList and each effect is only removed from entity if
+     * their amplifier matches amplifier in passed EffectList
+     *
+     * @param entity  the entity
+     * @param effects the effects
+     */
     public static void removeEffects(LivingEntity entity, EffectList effects) {
         for (var effectEntry : effects.data().entrySet()) {
             Holder<MobEffect> effect = effectEntry.getKey();

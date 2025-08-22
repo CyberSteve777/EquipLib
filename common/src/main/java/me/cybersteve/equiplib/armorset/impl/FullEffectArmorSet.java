@@ -10,11 +10,31 @@ import org.apache.commons.lang3.function.TriFunction;
 
 import java.util.function.Function;
 
+/**
+ * The type Full effect armor set.
+ */
 public class FullEffectArmorSet extends EffectArmorSet {
+    /**
+     * The function that gets effects when wearing full set.
+     */
     protected Function<LivingEntity, EffectList> whenWearing;
+    /**
+     * The function that gets effects on hit for attacker.
+     */
     protected TriFunction<DamageSource, LivingEntity, Float, EffectList> onHitForAttacker;
+    /**
+     * The function that gets effects on hit for self.
+     */
     protected TriFunction<DamageSource, LivingEntity, Float, EffectList> onHitForSelf;
 
+    /**
+     * Instantiates a new Full effect armor set.
+     *
+     * @param id               the id
+     * @param whenWearing      the when wearing
+     * @param onHitForSelf     the on hit for self
+     * @param onHitForAttacker the on hit for attacker
+     */
     public FullEffectArmorSet(ResourceLocation id,
                               Function<LivingEntity, EffectList> whenWearing,
                               TriFunction<DamageSource, LivingEntity, Float, EffectList> onHitForSelf,
@@ -30,7 +50,7 @@ public class FullEffectArmorSet extends EffectArmorSet {
         if (ArmorHooks.hasFullEffectSetArmorOn(entity, this)) {
             return whenWearing.apply(entity);
         }
-        return EffectList.getEmpty();
+        return EffectList.getEmptyList();
     }
 
     @Override
@@ -38,7 +58,7 @@ public class FullEffectArmorSet extends EffectArmorSet {
         if (ArmorHooks.hasFullEffectSetArmorOn(target, this)) {
             return onHitForSelf.apply(source, target, amount);
         }
-        return EffectList.getEmpty();
+        return EffectList.getEmptyList();
     }
 
     @Override
@@ -46,6 +66,6 @@ public class FullEffectArmorSet extends EffectArmorSet {
         if (ArmorHooks.hasFullEffectSetArmorOn(target, this)) {
             return onHitForAttacker.apply(source, target, amount);
         }
-        return EffectList.getEmpty();
+        return EffectList.getEmptyList();
     }
 }

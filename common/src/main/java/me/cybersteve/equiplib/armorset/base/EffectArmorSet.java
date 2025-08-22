@@ -2,9 +2,20 @@ package me.cybersteve.equiplib.armorset.base;
 
 import net.minecraft.resources.ResourceLocation;
 
+/**
+ * The type Effect armor set.
+ */
 public abstract class EffectArmorSet implements IEffectArmorSetExtension {
+    /**
+     * The Id.
+     */
     protected ResourceLocation id;
 
+    /**
+     * Instantiates a new Effect armor set.
+     *
+     * @param id the id
+     */
     public EffectArmorSet(ResourceLocation id) {
         this.id = id;
     }
