@@ -23,7 +23,7 @@ public interface IEffectHandHeldItem {
      * @param amount the amount
      * @return the effects for self when hit
      */
-    EffectList getEffectsForSelfWhenHit(DamageSource source, float amount);
+    EffectList getEffectsForSelfOnAttack(DamageSource source, LivingEntity owner, float amount);
 
     /**
      * Gets effects for target when hit.
@@ -32,5 +32,5 @@ public interface IEffectHandHeldItem {
      * @param amount the amount
      * @return the effects for target when hit
      */
-    EffectList getEffectsForTargetWhenHit(DamageSource source, float amount);
+    EffectList getEffectsForTargetOnAttack(DamageSource source, LivingEntity owner, float amount);
 }

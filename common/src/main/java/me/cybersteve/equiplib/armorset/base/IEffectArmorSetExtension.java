@@ -21,19 +21,19 @@ public interface IEffectArmorSetExtension {
      * Gets effects for self when hit.
      *
      * @param source the source
-     * @param target the target
+     * @param wearer the set wearer
      * @param amount the amount
      * @return the effects for self when hit
      */
-    EffectList getEffectsForSelfWhenHit(DamageSource source, LivingEntity target, float amount);
+    EffectList getEffectsForSelfWhenHit(DamageSource source, LivingEntity wearer, float amount);
 
     /**
      * Gets effects for attacker when hit.
      *
      * @param source the source
-     * @param target the target
+     * @param wearer the set wearer
      * @param amount the amount
      * @return the effects for attacker when hit
      */
-    EffectList getEffectsForAttackerWhenHit(DamageSource source, LivingEntity target, float amount);
+    EffectList getEffectsForAttackerWhenHit(DamageSource source, LivingEntity wearer, float amount);
 }
