@@ -22,20 +22,20 @@ public abstract class MobEntityMixin extends LivingEntity {
 
 
     @WrapOperation(method = "doHurtTarget", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
-    private boolean applyEffectsOnHitForSelf(Entity target, DamageSource source, float amount, Operation<Boolean> original) {
+    private boolean applyEffectsOnAttackForSelf(Entity target, DamageSource source, float amount, Operation<Boolean> original) {
         boolean wasAttacked = original.call(target, source, amount);
         if (wasAttacked && this.getItemBySlot(EquipmentSlot.MAINHAND).getItem() instanceof IEffectHandHeldItem item) {
-            CommonHooks.addEffects(this, item.getEffectsForSelfWhenHit(source, amount), this);
+            CommonHooks.addEffects(this, item.getEffectsForSelfOnAttack(source, this, amount), this);
         }
         return wasAttacked;
     }
 
     @WrapOperation(method = "doHurtTarget", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
-    private boolean applyEffectsOnHitForTarget(Entity target, DamageSource source, float amount, Operation<Boolean> original) {
+    private boolean applyEffectsOnAttackForTarget(Entity target, DamageSource source, float amount, Operation<Boolean> original) {
         boolean wasAttacked = original.call(target, source, amount);
         if (wasAttacked && target instanceof LivingEntity entity &&
                 this.getItemBySlot(EquipmentSlot.MAINHAND).getItem() instanceof IEffectHandHeldItem item) {
-            CommonHooks.addEffects(entity, item.getEffectsForSelfWhenHit(source, amount), this);
+            CommonHooks.addEffects(entity, item.getEffectsForTargetOnAttack(source, this, amount), this);
         }
         return wasAttacked;
     }
