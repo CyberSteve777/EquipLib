@@ -1,11 +1,12 @@
 package me.cybersteve.equiplib.armorset.base;
 
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * The type Effect armor set.
  */
-public abstract class EffectArmorSet implements IEffectArmorSetExtension {
+public abstract class EffectArmorSet implements IEffectArmorSetExtension, Comparable<EffectArmorSet> {
     /**
      * The Id.
      */
@@ -28,5 +29,10 @@ public abstract class EffectArmorSet implements IEffectArmorSetExtension {
     @Override
     public int hashCode() {
         return id.hashCode();
+    }
+
+    @Override
+    public int compareTo(@NotNull EffectArmorSet other) {
+        return id.compareTo(other.id);
     }
 }
