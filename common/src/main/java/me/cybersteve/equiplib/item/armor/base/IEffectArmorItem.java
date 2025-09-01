@@ -3,9 +3,9 @@ package me.cybersteve.equiplib.item.armor.base;
 import me.cybersteve.equiplib.armorset.base.EffectArmorSet;
 
 /**
- * The interface Effect armor item extension.
+ * The interface Effect armor item.
  */
-public interface IEffectArmorItemExtension {
+public interface IEffectArmorItem {
     /**
      * Gets effect armor set.
      *

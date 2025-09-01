@@ -1,6 +1,6 @@
 package me.cybersteve.equiplib.mixin;
 
-import me.cybersteve.equiplib.item.armor.base.IEffectArmorItemExtension;
+import me.cybersteve.equiplib.item.armor.base.IEffectArmorItem;
 import me.cybersteve.equiplib.item.handheld.base.IEffectHandHeldItem;
 import me.cybersteve.equiplib.util.EffectList;
 import net.minecraft.world.damagesource.DamageSource;
@@ -64,7 +64,7 @@ public abstract class LivingEntityMixin extends Entity {
                 EquipmentSlot.BODY)) {
             ItemStack stack = this.getItemBySlot(slot);
             EffectList currentSlotEffects = equipLib$currentEffectsBySlot.getOrDefault(slot, EffectList.getEmptyList());
-            if (!stack.isEmpty() && stack.getItem() instanceof IEffectArmorItemExtension item) {
+            if (!stack.isEmpty() && stack.getItem() instanceof IEffectArmorItem item) {
                 EffectList newEffectsBySlot = item.getEffectArmorSet().getEffectsWhenWearing(self);
                 if (!currentSlotEffects.isEmpty() && !currentSlotEffects.equals(newEffectsBySlot)) {
                     CommonHooks.removeEffects(self, currentSlotEffects);
@@ -90,7 +90,7 @@ public abstract class LivingEntityMixin extends Entity {
                 for (EquipmentSlot slot: List.of(EquipmentSlot.HEAD, EquipmentSlot.CHEST,
                         EquipmentSlot.LEGS, EquipmentSlot.FEET, EquipmentSlot.BODY)) {
                     ItemStack stack = this.getItemBySlot(slot);
-                    if (!stack.isEmpty() && stack.getItem() instanceof IEffectArmorItemExtension item) {
+                    if (!stack.isEmpty() && stack.getItem() instanceof IEffectArmorItem item) {
                         CommonHooks.addEffects(entity,
                                 item.getEffectArmorSet().getEffectsForAttackerWhenHit(source, self, amount), self);
                     }
@@ -107,7 +107,7 @@ public abstract class LivingEntityMixin extends Entity {
             for (EquipmentSlot slot: List.of(EquipmentSlot.HEAD, EquipmentSlot.CHEST,
                     EquipmentSlot.LEGS, EquipmentSlot.FEET, EquipmentSlot.BODY)) {
                 ItemStack stack = this.getItemBySlot(slot);
-                if (!stack.isEmpty() && stack.getItem() instanceof IEffectArmorItemExtension item) {
+                if (!stack.isEmpty() && stack.getItem() instanceof IEffectArmorItem item) {
                     CommonHooks.addEffects(self,
                             item.getEffectArmorSet().getEffectsForSelfWhenHit(source, self, amount), self);
                 }
