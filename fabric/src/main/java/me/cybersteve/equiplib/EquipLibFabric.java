@@ -12,7 +12,6 @@ public class EquipLibFabric implements ModInitializer {
         // project.
 
         // Use Fabric to bootstrap the Common mod.
-        Constants.LOGGER.info("Hello Fabric world!");
         EquipLib.init();
     }
 }
