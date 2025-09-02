@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import me.cybersteve.equiplib.util.CommonHooks;
+import me.cybersteve.equiplib.util.EffectListHelper;
 
 import java.util.HashMap;
 import java.util.List;
@@ -44,14 +44,14 @@ public abstract class LivingEntityMixin extends Entity {
         if (this.getItemBySlot(EquipmentSlot.MAINHAND).getItem() instanceof IEffectHandHeldItem item) {
             EffectList newEffects = item.getEffectsWhenInHand(self);
             if (!equipLib$currentHandHeldEffects.isEmpty() && !newEffects.equals(equipLib$currentHandHeldEffects)) {
-                CommonHooks.removeEffects(self, equipLib$currentHandHeldEffects);
+                EffectListHelper.removeEffects(self, equipLib$currentHandHeldEffects);
             }
-            if (CommonHooks.checkIfNeedToApply(self, newEffects)) {
-                CommonHooks.addEffects(self, newEffects);
+            if (EffectListHelper.checkIfNeedToApply(self, newEffects)) {
+                EffectListHelper.addEffects(self, newEffects);
             }
             equipLib$currentHandHeldEffects = newEffects;
         } else if (!equipLib$currentHandHeldEffects.isEmpty()) {
-            CommonHooks.removeEffects(self,
+            EffectListHelper.removeEffects(self,
                     equipLib$currentHandHeldEffects);
             equipLib$currentHandHeldEffects = EffectList.getEmptyList();
         }
@@ -67,14 +67,14 @@ public abstract class LivingEntityMixin extends Entity {
             if (!stack.isEmpty() && stack.getItem() instanceof IEffectArmorItem item) {
                 EffectList newEffectsBySlot = item.getEffectArmorSet().getEffectsWhenWearing(self);
                 if (!currentSlotEffects.isEmpty() && !currentSlotEffects.equals(newEffectsBySlot)) {
-                    CommonHooks.removeEffects(self, currentSlotEffects);
+                    EffectListHelper.removeEffects(self, currentSlotEffects);
                 }
-                if (CommonHooks.checkIfNeedToApply(self, newEffectsBySlot)) {
-                    CommonHooks.addEffects(self, newEffectsBySlot);
+                if (EffectListHelper.checkIfNeedToApply(self, newEffectsBySlot)) {
+                    EffectListHelper.addEffects(self, newEffectsBySlot);
                 }
                 equipLib$currentEffectsBySlot.put(slot, newEffectsBySlot);
             } else if (!currentSlotEffects.isEmpty()) {
-                CommonHooks.removeEffects(self, currentSlotEffects);
+                EffectListHelper.removeEffects(self, currentSlotEffects);
                 equipLib$currentEffectsBySlot.put(slot, EffectList.getEmptyList());
             }
         }
@@ -91,7 +91,7 @@ public abstract class LivingEntityMixin extends Entity {
                         EquipmentSlot.LEGS, EquipmentSlot.FEET, EquipmentSlot.BODY)) {
                     ItemStack stack = this.getItemBySlot(slot);
                     if (!stack.isEmpty() && stack.getItem() instanceof IEffectArmorItem item) {
-                        CommonHooks.addEffects(entity,
+                        EffectListHelper.addEffects(entity,
                                 item.getEffectArmorSet().getEffectsForAttackerWhenHit(source, self, amount), self);
                     }
                 }
@@ -108,7 +108,7 @@ public abstract class LivingEntityMixin extends Entity {
                     EquipmentSlot.LEGS, EquipmentSlot.FEET, EquipmentSlot.BODY)) {
                 ItemStack stack = this.getItemBySlot(slot);
                 if (!stack.isEmpty() && stack.getItem() instanceof IEffectArmorItem item) {
-                    CommonHooks.addEffects(self,
+                    EffectListHelper.addEffects(self,
                             item.getEffectArmorSet().getEffectsForSelfWhenHit(source, self, amount), self);
                 }
             }

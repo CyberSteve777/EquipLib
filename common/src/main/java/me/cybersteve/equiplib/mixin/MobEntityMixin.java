@@ -4,7 +4,7 @@ package me.cybersteve.equiplib.mixin;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import me.cybersteve.equiplib.item.handheld.base.IEffectHandHeldItem;
-import me.cybersteve.equiplib.util.CommonHooks;
+import me.cybersteve.equiplib.util.EffectListHelper;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.level.Level;
@@ -25,7 +25,7 @@ public abstract class MobEntityMixin extends LivingEntity {
     private boolean applyEffectsOnAttackForSelf(Entity target, DamageSource source, float amount, Operation<Boolean> original) {
         boolean wasAttacked = original.call(target, source, amount);
         if (wasAttacked && this.getItemBySlot(EquipmentSlot.MAINHAND).getItem() instanceof IEffectHandHeldItem item) {
-            CommonHooks.addEffects(this, item.getEffectsForSelfOnAttack(source, this, amount), this);
+            EffectListHelper.addEffects(this, item.getEffectsForSelfOnAttack(source, this, amount), this);
         }
         return wasAttacked;
     }
@@ -35,7 +35,7 @@ public abstract class MobEntityMixin extends LivingEntity {
         boolean wasAttacked = original.call(target, source, amount);
         if (wasAttacked && target instanceof LivingEntity entity &&
                 this.getItemBySlot(EquipmentSlot.MAINHAND).getItem() instanceof IEffectHandHeldItem item) {
-            CommonHooks.addEffects(entity, item.getEffectsForTargetOnAttack(source, this, amount), this);
+            EffectListHelper.addEffects(entity, item.getEffectsForTargetOnAttack(source, this, amount), this);
         }
         return wasAttacked;
     }

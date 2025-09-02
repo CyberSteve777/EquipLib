@@ -1,7 +1,7 @@
 package me.cybersteve.equiplib.armorset.impl;
 
 import me.cybersteve.equiplib.armorset.base.EffectArmorSet;
-import me.cybersteve.equiplib.util.ArmorHooks;
+import me.cybersteve.equiplib.util.ArmorSetHelper;
 import me.cybersteve.equiplib.util.EffectList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageSource;
@@ -47,7 +47,7 @@ public class FullEffectArmorSet extends EffectArmorSet {
 
     @Override
     public EffectList getEffectsWhenWearing(LivingEntity entity) {
-        if (ArmorHooks.hasFullEffectSetArmorOn(entity, this)) {
+        if (ArmorSetHelper.hasFullEffectSetArmorOn(entity, this)) {
             return whenWearing.apply(entity);
         }
         return EffectList.getEmptyList();
@@ -55,7 +55,7 @@ public class FullEffectArmorSet extends EffectArmorSet {
 
     @Override
     public EffectList getEffectsForSelfWhenHit(DamageSource source, LivingEntity target, float amount) {
-        if (ArmorHooks.hasFullEffectSetArmorOn(target, this)) {
+        if (ArmorSetHelper.hasFullEffectSetArmorOn(target, this)) {
             return onHitForSelf.apply(source, target, amount);
         }
         return EffectList.getEmptyList();
@@ -63,7 +63,7 @@ public class FullEffectArmorSet extends EffectArmorSet {
 
     @Override
     public EffectList getEffectsForAttackerWhenHit(DamageSource source, LivingEntity target, float amount) {
-        if (ArmorHooks.hasFullEffectSetArmorOn(target, this)) {
+        if (ArmorSetHelper.hasFullEffectSetArmorOn(target, this)) {
             return onHitForAttacker.apply(source, target, amount);
         }
         return EffectList.getEmptyList();

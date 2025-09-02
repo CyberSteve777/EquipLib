@@ -8,9 +8,9 @@ import net.minecraft.world.entity.LivingEntity;
 import java.util.List;
 
 /**
- * Armor hooks.
+ * Armor set helper.
  */
-public class ArmorHooks {
+public class ArmorSetHelper {
     /**
      * Has full effect set armor on boolean.
      *

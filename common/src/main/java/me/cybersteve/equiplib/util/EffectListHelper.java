@@ -6,9 +6,9 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 
 /**
- * Common hooks for equipment.
+ * Common helper for equipment.
  */
-public class CommonHooks {
+public class EffectListHelper {
     /**
      * Check if need to apply the effects from EffectList (to prevent flashing).
      *
