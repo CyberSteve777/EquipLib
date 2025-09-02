@@ -34,6 +34,17 @@ public record EffectList(ConcurrentHashMap<Holder<MobEffect>, EffectMeta> data) 
         return new EffectList.Builder().build();
     }
 
+    public void setNewMetaForEffect(Holder<MobEffect> effect, EffectMeta meta) {
+        if (!data.containsKey(effect)) {
+            throw new IllegalArgumentException("Effect " + effect.value() + " isn't present in list");
+        }
+        data.put(effect, meta);
+    }
+
+    public void removeEffect(Holder<MobEffect> effect) {
+        data.remove(effect);
+    }
+
     @Override
     public boolean equals(Object o) {
         return o instanceof EffectList(ConcurrentHashMap<Holder<MobEffect>, EffectMeta> data1) && data.equals(data1);
