@@ -5,14 +5,15 @@
     "name": "${mod_name}",
     "description": "${description}",
     "authors": [
-        "${mod_author}"
+        "${mod_author}",
+        "ZyaBlik"
     ],
     "contact": {
-        "homepage": "https://fabricmc.net/",
-        "sources": "https://github.com/FabricMC/fabric-example-mod"
+        "homepage": "https://github.com/CyberSteve777/EquipLib",
+        "sources": "https://github.com/CyberSteve777/EquipLib"
     },
     "license": "${license}",
-    "icon": "${mod_id}.png",
+    "icon": "assets/icon.png",
     "environment": "*",
     "entrypoints": {
         "main": [
