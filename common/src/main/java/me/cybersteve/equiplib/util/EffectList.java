@@ -34,6 +34,12 @@ public record EffectList(ConcurrentHashMap<Holder<MobEffect>, EffectMeta> data) 
         return new EffectList.Builder().build();
     }
 
+    /**
+     * Sets new meta for effect in list.
+     *
+     * @param effect the effect
+     * @param meta   the meta
+     */
     public void setNewMetaForEffect(Holder<MobEffect> effect, EffectMeta meta) {
         if (!data.containsKey(effect)) {
             throw new IllegalArgumentException("Effect " + effect.value() + " isn't present in list");
@@ -41,6 +47,11 @@ public record EffectList(ConcurrentHashMap<Holder<MobEffect>, EffectMeta> data) 
         data.put(effect, meta);
     }
 
+    /**
+     * Remove effect from list.
+     *
+     * @param effect the effect
+     */
     public void removeEffect(Holder<MobEffect> effect) {
         data.remove(effect);
     }
