@@ -15,7 +15,9 @@ public interface IEffectArmorSetExtension {
      * @param entity the LivingEntity that is currently wearing the ArmorSet
      * @return the effects when wearing
      */
-    EffectList getEffectsWhenWearing(LivingEntity entity);
+    default EffectList getEffectsWhenWearing(LivingEntity entity) {
+        return EffectList.getEmptyList();
+    }
 
     /**
      * Gets effects for self when hit.
@@ -25,7 +27,9 @@ public interface IEffectArmorSetExtension {
      * @param amount the amount of damage wearer is about to receive
      * @return the effects for self when hit
      */
-    EffectList getEffectsForSelfWhenHit(DamageSource source, LivingEntity wearer, float amount);
+    default EffectList getEffectsForSelfWhenHit(DamageSource source, LivingEntity wearer, float amount) {
+        return EffectList.getEmptyList();
+    }
 
     /**
      * Gets effects for attacker when hit.
@@ -35,5 +39,7 @@ public interface IEffectArmorSetExtension {
      * @param amount the amount of damage wearer is about to receive
      * @return the effects for attacker when hit
      */
-    EffectList getEffectsForAttackerWhenHit(DamageSource source, LivingEntity wearer, float amount);
+    default EffectList getEffectsForAttackerWhenHit(DamageSource source, LivingEntity wearer, float amount) {
+        return EffectList.getEmptyList();
+    }
 }

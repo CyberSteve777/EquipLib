@@ -14,7 +14,9 @@ public interface IEffectHandHeldItem {
      * @param entity the LivingEntity item holder
      * @return the effects when in hand
      */
-    EffectList getEffectsWhenInHand(LivingEntity entity);
+    default EffectList getEffectsWhenInHand(LivingEntity entity) {
+        return EffectList.getEmptyList();
+    }
 
     /**
      * Gets effects for self on attack.
@@ -24,7 +26,9 @@ public interface IEffectHandHeldItem {
      * @param amount the amount of damage is about to deal
      * @return the effects for self on attack
      */
-    EffectList getEffectsForSelfOnAttack(DamageSource source, LivingEntity owner, float amount);
+    default EffectList getEffectsForSelfOnAttack(DamageSource source, LivingEntity owner, float amount) {
+        return EffectList.getEmptyList();
+    }
 
     /**
      * Gets effects for target on attack.
@@ -34,5 +38,7 @@ public interface IEffectHandHeldItem {
      * @param amount the amount of damage is about to deal
      * @return the effects for target on attack
      */
-    EffectList getEffectsForTargetOnAttack(DamageSource source, LivingEntity owner, float amount);
+    default EffectList getEffectsForTargetOnAttack(DamageSource source, LivingEntity owner, float amount) {
+        return EffectList.getEmptyList();
+    }
 }
