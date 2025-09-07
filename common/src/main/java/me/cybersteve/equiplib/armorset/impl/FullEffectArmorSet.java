@@ -50,7 +50,7 @@ public class FullEffectArmorSet extends EffectArmorSet {
         if (ArmorSetHelper.hasFullEffectSetArmorOn(entity, this)) {
             return whenWearing.apply(entity);
         }
-        return EffectList.getEmptyList();
+        return super.getEffectsWhenWearing(entity);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class FullEffectArmorSet extends EffectArmorSet {
         if (ArmorSetHelper.hasFullEffectSetArmorOn(target, this)) {
             return onHitForSelf.apply(source, target, amount);
         }
-        return EffectList.getEmptyList();
+        return super.getEffectsForSelfWhenHit(source, target, amount);
     }
 
     @Override
@@ -66,6 +66,6 @@ public class FullEffectArmorSet extends EffectArmorSet {
         if (ArmorSetHelper.hasFullEffectSetArmorOn(target, this)) {
             return onHitForAttacker.apply(source, target, amount);
         }
-        return EffectList.getEmptyList();
+        return super.getEffectsForAttackerWhenHit(source, target, amount);
     }
 }
