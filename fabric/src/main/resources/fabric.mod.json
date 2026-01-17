@@ -1,22 +1,23 @@
 {
     "schemaVersion": 1,
-    "id": "mod_id",
+    "id": "${mod_id}",
     "version": "${version}",
     "name": "${mod_name}",
     "description": "${description}",
     "authors": [
-        "${mod_author}"
+        "${mod_author}",
+        "ZyaBlik"
     ],
     "contact": {
-        "homepage": "https://fabricmc.net/",
-        "sources": "https://github.com/FabricMC/fabric-example-mod"
+        "homepage": "https://github.com/CyberSteve777/EquipLib",
+        "sources": "https://github.com/CyberSteve777/EquipLib"
     },
     "license": "${license}",
-    "icon": "assets/modid/${mod_id}.png",
+    "icon": "assets/icon.png",
     "environment": "*",
     "entrypoints": {
         "main": [
-            "com.example.examplemod.ExampleMod"
+            "me.cybersteve.equiplib.EquipLibFabric"
         ]
     },
     "mixins": [
@@ -24,10 +25,10 @@
         "${mod_id}.fabric.mixins.json"
     ],
     "depends": {
-        "fabricloader": ">=0.14",
-        "fabric": "*",
+        "fabricloader": ">=${fabric_loader_version}",
+        "fabric-api": "*",
         "minecraft": "${minecraft_version}",
-        "java": ">=17"
+        "java": ">=${java_version}"
     },
     "suggests": {
         "another-mod": "*"
